@@ -40,7 +40,7 @@ public class ItemList {
     }
 
     public void addNewBook(Book book){
-        int index = getItemSize();
+        int index = getItemCountByCategory("book");
         libraryItems.add(index, book);
     }
 
