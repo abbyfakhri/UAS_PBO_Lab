@@ -2,11 +2,6 @@ package datamodel;
 
 public class Book extends LibraryItem{
 
-    public Book(
-        
-    ){
-
-    }
     
     private String genre;
     private String author;

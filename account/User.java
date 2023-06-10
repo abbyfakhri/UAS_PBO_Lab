@@ -24,6 +24,10 @@ public class User {
         return username;
     }
 
+    public LibraryItem getItemByIndex(int index){
+        return borrowList.get(index);
+    }
+
     public String getPassword(){
         return password;
     }
@@ -35,6 +39,8 @@ public class User {
 
     public void returnItem(int index){
         System.out.println("succesfully returning item");
+        borrowList.remove(index);
+        
     }
 
     public void showBorrowList(){

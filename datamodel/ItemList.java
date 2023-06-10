@@ -11,16 +11,33 @@ public class ItemList {
 
     public LibraryItem getItemByIndex(int index){
 
-        libraryItems.get(index)
-        .setItemCount(
-            libraryItems.get(index).getItemCount()-1
-        );
-
         return libraryItems.get(index);
 
     }
 
+    public void addItemCount(LibraryItem libraryItem){
 
+        String title = libraryItem.getTitle();
+
+        for(LibraryItem item: libraryItems){
+            if(item.getTitle().equals(title)){
+                item.setItemCount(item.getItemCount()+1);
+            }
+        }
+
+    }
+
+    public void reduceItemCount(LibraryItem libraryItem){
+
+        String title = libraryItem.getTitle();
+
+        for(LibraryItem item: libraryItems){
+            if(item.getTitle().equals(title)){
+                item.setItemCount(item.getItemCount()-1);
+            }
+        }
+
+    }
 
     public void addNewBook(Book book){
         int index = getItemSize();
@@ -36,20 +53,27 @@ public class ItemList {
         return libraryItems.size();
     }
 
+    public void removeItemByIndex(int index){
+        libraryItems.remove(index);
+        showAll();
+    }
+
 
     public void showAll(){
         
         CommandLineTable table = new CommandLineTable();
 
         table.setShowVerticalLines(true);
-        table.setHeaders("title","item count","publisher");
+        table.setHeaders("No.","title","item count","publisher");
 
+        int num = 0;
         for(LibraryItem item: libraryItems){
+            num++;
             String title = item.getTitle();
             String itemCount = String.valueOf(item.getItemCount()) ;
             String publisher = item.getPublisher();
 
-            table.addRow(title,itemCount,publisher);
+            table.addRow(String.valueOf(num),title,itemCount,publisher);
         }
 
         table.print();
@@ -73,6 +97,22 @@ public class ItemList {
         }
 
         table.print();
+    }
+
+    public int getItemCountByCategory(String category){
+        int count = 0;
+
+        for(LibraryItem item: libraryItems){
+            if(item instanceof Book && category.equals("book")){
+                count++;
+            }
+
+            if(item instanceof Magazine && category.equals("magazine")){
+                count++;
+            }
+        }
+
+        return count;
     }
 
     public void showCategory(String category){

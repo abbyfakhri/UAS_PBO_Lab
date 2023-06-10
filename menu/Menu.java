@@ -3,8 +3,10 @@ import java.util.Scanner;
 
 import account.User;
 import account.UserList;
+import datamodel.Book;
 import datamodel.ItemList;
 import datamodel.LibraryItem;
+import datamodel.Magazine;
 
 public class Menu {
 
@@ -186,7 +188,7 @@ public class Menu {
                             println("borrow book");
                             println("-----------------------------");
                             itemList.showCategory("book");
-                            borrowBook();
+                            borrowItem("book");
         
                             showUserMenu();
                         }
@@ -195,7 +197,8 @@ public class Menu {
                             // go to return book menu
                             println("return book");
                             println("-----------------------------");
-                            itemList.showCategory("book");
+                            currentUser.showBorrowList();
+                            returnItem();
         
                             showUserMenu();
                         }
@@ -208,12 +211,14 @@ public class Menu {
                         else if(input == 5){
                             println("Borrow Magazine");
                             itemList.showCategory("magazine");
+                            borrowItem("magazine");
                             showUserMenu();
                         }
 
                         else if(input == 6){
                             println("Return Magazine");
                             itemList.showCategory("magazine");
+                            returnItem();
                             showUserMenu();
                         }
 
@@ -259,40 +264,43 @@ public class Menu {
             println("What do you want to do?");
             println("1. Add item");
             println("2. Remove item");
-            println("3. Update item");
-            println("4. Exit");
+            println("3. Exit");
             println("-----------------------------");
             
             print("input: ");
-            println("-----------------------------");
-            
             int input = scan.nextInt();
+            println("-----------------------------");
     
             if(input == 1){
                 // add item menu
                 println("adding new item");
-                println("-----------------------------");
+                print("which one do you want to add, book/magazine? ");
+                String categoryInput = scan.next();
+
+                if(categoryInput.equals("book")){
+                    // add new book
+                    addNewItem("book");
+                }
+                else if(categoryInput.equals("magazine")){
+                    addNewItem("magazine");
+                }
+                else{
+                    println("invalid category input, please try again");
+                    showAdminMenu();
+                }
             
                 showAdminMenu();
             }
     
             else if(input == 2){
                 // remove item menu
-                println("remove new item");
-                println("-----------------------------");
-            
-                showAdminMenu();
-            }
-    
-            else if(input == 3){
-                // update item menu
-                println("updating item");
-                println("-----------------------------");
+                println("remove item");
+                removeItem();
             
                 showAdminMenu();
             }
 
-            else if(input == 4){
+            else if(input == 3){
                 // exit the menu
                 println("see you again");
                 println("-----------------------------");
@@ -308,18 +316,126 @@ public class Menu {
             }
     }
 
-    private void borrowBook(){
+    private void removeItem(){
+        itemList.showAll();
+
+        println("which one do you want to remove?");
+        print("enter item number on the table: ");
+        int input = scan.nextInt();
+
+        itemList.removeItemByIndex(input-1);
+
+        println("succesfully removing item");
+    }
+
+    private void addNewItem(String category){
+
+        if(category.equals("book")){
+            println("Please add new book detail");
+            scan.nextLine();
+            print("book title: ");
+            String title = scan.nextLine();
+            scan.nextLine();
+            print("publisher: ");
+            String publisher = scan.nextLine();
+            print("item count: ");
+            int itemCount = scan.nextInt();
+            scan.nextLine();
+            print("genre: ");
+            String genre = scan.nextLine();
+            print("author: ");
+            String author = scan.nextLine();
+            print("number of pages: ");
+            int numberOfPages = scan.nextInt();
+            
+            Book book = new Book();
+
+            book.setTitle(title);
+            book.setPublisher(publisher);
+            book.setItemCount(itemCount);
+            book.setGenre(genre);
+            book.setAuthor(author);
+            book.setNumberOfPages(numberOfPages);
+
+            itemList.addNewBook(book);
+
+            println("Succesfully adding new book");
+            showAdminMenu();
+        }
+
+        else if(category.equals("magazine")){
+
+            println("Please add new magazine details");
+            scan.nextLine();
+            print("magazine title: ");
+            String title = scan.nextLine();
+            scan.nextLine();
+            print("publisher: ");
+            String publisher = scan.nextLine();
+            print("item count: ");
+            int itemCount = scan.nextInt();
+            print("issue number: ");
+            String issueNumber = scan.next();
+            print("is this magazine update monthly: ");
+            boolean isMonthly = scan.nextBoolean();
+
+            Magazine newMagazine = new Magazine();
+
+            newMagazine.setTitle(title);
+            newMagazine.setPublisher(publisher);
+            newMagazine.setItemCount(itemCount);
+            newMagazine.setIssueNumber(issueNumber);
+            newMagazine.setIsMonthly(isMonthly);
+
+            itemList.addNewMagazine(newMagazine);
+
+            println("Succesfully adding new magazine");
+            showAdminMenu();
+        }
+
+        else{
+            println("Invalid input, please try again");
+            showAdminMenu();
+        }
+
+    }
+
+    private void borrowItem(String category){
         println("Which Book do You Want to Borrow");
         print("Select by number on table: ");
         int input = scan.nextInt();
 
+        if(category.equals("magazine")){
+            input += itemList.getItemCountByCategory("book");
+        }
 
-        currentUser.borrowItem(itemList.getItemByIndex(input-1));
+        LibraryItem item = itemList.getItemByIndex(input-1);
 
+        if(item.getItemCount() <= 0){
+            println("+------------------------------------+");
+            println("|This item is currently not available|");
+            println("+------------------------------------+");
+            showUserMenu();
+        }
 
+        itemList.reduceItemCount(item);
 
+        currentUser.borrowItem(item);
 
+    }
 
+    private void returnItem(){
+        println("Which Book do You Want to Return");
+        print("Select by Number on Table: ");
+        int input = scan.nextInt();
+
+        LibraryItem item = new LibraryItem();
+
+        item = currentUser.getItemByIndex(input-1);
+        
+        currentUser.returnItem(input-1);
+
+        itemList.addItemCount(item);
         
     }
 
