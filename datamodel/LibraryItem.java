@@ -4,7 +4,6 @@ public class LibraryItem {
 
     private String itemID;
     private String title;
-    private boolean available;
     private String publisher;
     private int itemCount;
 

@@ -17,10 +17,6 @@ public class Main{
         
     }
 
-    private static void print(String input){
-        System.out.println(input);
-    }
-
         public static void initiateData(){
         
         UserList userList = new UserList();

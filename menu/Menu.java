@@ -36,7 +36,7 @@ public class Menu {
             }
             else if(input == 2){
                 // go to admin page
-                showLogin();
+                showAdminLogin();
                 
             }
             else if(input == 3){
@@ -53,8 +53,6 @@ public class Menu {
             println("-----------------------------");
 
     }
-
-    
 
     public void showLogin(){
 
@@ -437,6 +435,69 @@ public class Menu {
 
         itemList.addItemCount(item);
         
+    }
+
+        public void showAdminLogin(){
+
+        UserList userList = new UserList();
+            println("-----------------------------");
+            println("1. Login");
+            println("2. Exit");
+            println("-----------------------------");
+
+            print("input: ");
+            
+            int input = 0;
+            
+            if(scan.hasNextInt()){
+                input = scan.nextInt();
+                println("-----------------------------");
+
+                if(input == 1){
+                    println("logging in");
+
+                    if(scan.hasNextLine()){
+                        print("username: ");
+                        String username = scan.next();
+                        print("password: ");
+                        String password = scan.next();
+
+                        if(username.equals("Admin") && password.equals("123")){
+                            println("Welcome Admin");
+                            showAdminMenu();
+                        }
+                        currentUser = userList.isLogin(username, password);
+
+                        if(currentUser == null){
+                            println("can't find account, please try again");
+                            showLogin();
+                        }
+                        println("Succesfully login");
+                        println("-----------------------------");
+
+                        showUserMenu();
+
+                    }
+                }
+                
+                else if(input == 2){
+                    println("-----------------------------");
+
+                    println("see you again");
+                    showMainMenu();
+                    println("-----------------------------");
+
+                }
+                else{
+                    println("-----------------------------");
+
+                    println("invalid input, please try again");
+                    println("-----------------------------");
+
+                    showLogin();
+                }
+            }
+
     }
 
     private void println(String input){
